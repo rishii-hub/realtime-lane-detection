@@ -6,9 +6,15 @@
   <p><strong>A fast, interpretable lane-detection pipeline built on classical computer vision — plus a modern dashboard to drive it.</strong></p>
 
   <p>
-    <a href="#-quick-start"><img src="https://img.shields.io/badge/Get_Started-22c55e?style=for-the-badge&logo=rocket&logoColor=black" alt="Get Started" /></a>
-    <a href="frontend/"><img src="https://img.shields.io/badge/Live_Dashboard-0d1117?style=for-the-badge&logo=react&logoColor=58a6ff" alt="Dashboard" /></a>
+    <a href="https://rishii-hub.github.io/realtime-lane-detection/"><img src="https://img.shields.io/badge/▶_Live_Demo-22c55e?style=for-the-badge&logoColor=black" alt="Live Demo" /></a>
+    <a href="#-quick-start"><img src="https://img.shields.io/badge/Get_Started-0d1117?style=for-the-badge&logo=rocket&logoColor=22c55e" alt="Get Started" /></a>
     <a href="docs/"><img src="https://img.shields.io/badge/Documentation-0d1117?style=for-the-badge&logo=readthedocs&logoColor=white" alt="Docs" /></a>
+  </p>
+
+  <p>
+    <a href="https://github.com/rishii-hub/realtime-lane-detection/actions/workflows/tests.yml"><img src="https://github.com/rishii-hub/realtime-lane-detection/actions/workflows/tests.yml/badge.svg" alt="Tests" /></a>
+    <a href="https://github.com/rishii-hub/realtime-lane-detection/actions/workflows/lint.yml"><img src="https://github.com/rishii-hub/realtime-lane-detection/actions/workflows/lint.yml/badge.svg" alt="Lint" /></a>
+    <a href="https://github.com/rishii-hub/realtime-lane-detection/actions/workflows/deploy-pages.yml"><img src="https://github.com/rishii-hub/realtime-lane-detection/actions/workflows/deploy-pages.yml/badge.svg" alt="Deploy" /></a>
   </p>
 
   <p>
@@ -17,7 +23,6 @@
     <img src="https://img.shields.io/badge/React-18-61DAFB?logo=react&logoColor=black" alt="React" />
     <img src="https://img.shields.io/badge/TypeScript-strict-3178C6?logo=typescript&logoColor=white" alt="TypeScript" />
     <img src="https://img.shields.io/badge/code%20style-black-000000.svg" alt="Black" />
-    <img src="https://img.shields.io/badge/tests-passing-22c55e?logo=pytest&logoColor=white" alt="Tests" />
     <img src="https://img.shields.io/badge/License-MIT-f0b429.svg" alt="License" />
   </p>
 </div>
@@ -80,11 +85,21 @@ python -m app --source 0
 
 ### Dashboard
 
+> **No install needed** — try the hosted dashboard at
+> **[rishii-hub.github.io/realtime-lane-detection](https://rishii-hub.github.io/realtime-lane-detection/)**
+> and click *"Try a sample clip"*.
+
 ```bash
 cd frontend
 npm install
 npm run dev        # → http://localhost:5173
 ```
+
+<div align="center">
+  <img src="assets/screenshots/dashboard.jpg" alt="Dashboard running lane detection on the sample clip" width="90%" />
+  <br/>
+  <sub>The dashboard processing the bundled sample clip — live overlay, metrics, and controls.</sub>
+</div>
 
 ## 🏗️ Architecture
 
@@ -126,6 +141,8 @@ thin adapters around it, so the pipeline is trivially testable and embeddable.
 | **CI/CD** | GitHub Actions (lint · types · tests · build) |
 
 ## 📸 Screenshots
+
+Output of the Python pipeline (`python -m app`) on the bundled sample clip:
 
 <div align="center">
   <img src="assets/screenshots/screenshot_1.jpg" width="49%" />

@@ -8,6 +8,10 @@ A modern, dark-themed dashboard for the
 > real, on-device canvas overlay (including a genuine Sobel edge pass) on top of
 > an uploaded clip or your webcam — no backend, no upload, no tracking.
 
+**Live demo:** [rishii-hub.github.io/realtime-lane-detection](https://rishii-hub.github.io/realtime-lane-detection/) —
+deployed automatically from `main` via GitHub Pages. Click *"Try a sample clip"*
+for an instant, zero-setup demo.
+
 ## Features
 
 - 🎥 **Drag-and-drop** video upload and **live webcam** preview

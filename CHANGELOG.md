@@ -12,6 +12,21 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - Polynomial lane fitting to replace straight-line Hough averaging
 - WebAssembly build of the pipeline for in-browser inference
 
+## [1.1.0] - 2026-07-06
+
+### Added
+
+- **Live demo** — the dashboard is deployed to GitHub Pages on every push to
+  `main` (`deploy-pages` workflow, configurable Vite base path).
+- **One-click sample clip** — the dashboard bundles a small H.264 drive clip so
+  visitors can see detection running without hunting for a video.
+- Real dashboard screenshot and CI status badges in the README.
+
+### Fixed
+
+- Repository URLs now point at the actual GitHub slug.
+- `mypy app` passes cleanly (numpy/cv2/yaml treated as opaque imports).
+
 ## [1.0.0] - 2026-07-06
 
 ### Added
@@ -32,5 +47,6 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - Refactored the original single-file script into a maintainable package.
 - Replaced blocking `input()` prompts with a proper `argparse` CLI (`python -m app`).
 
-[Unreleased]: https://github.com/rishii-hub/realtime-lane-detection/compare/v1.0.0...HEAD
+[Unreleased]: https://github.com/rishii-hub/realtime-lane-detection/compare/v1.1.0...HEAD
+[1.1.0]: https://github.com/rishii-hub/realtime-lane-detection/compare/v1.0.0...v1.1.0
 [1.0.0]: https://github.com/rishii-hub/realtime-lane-detection/releases/tag/v1.0.0
