@@ -1,0 +1,11 @@
+# Server deployment requirements (Render, Docker, etc.).
+#
+# Identical to requirements.txt except OpenCV: hosted Linux runtimes have no
+# libGL, so the GUI build (opencv-python) fails to import there. The headless
+# build provides everything the web server needs (VideoCapture, imencode);
+# only desktop windowing (cv2.imshow in cli.py) is absent.
+opencv-python-headless>=4.8
+numpy>=1.24
+fastapi>=0.110
+uvicorn[standard]>=0.27
+python-multipart>=0.0.9

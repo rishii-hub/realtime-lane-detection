@@ -180,4 +180,6 @@ if os.path.isdir(os.path.join(DIST_DIR, "assets")):
 if __name__ == "__main__":
     import uvicorn
 
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+    # Hosted platforms (Render, Railway, ...) inject the port via $PORT.
+    port = int(os.environ.get("PORT", "8000"))
+    uvicorn.run(app, host="0.0.0.0", port=port)
