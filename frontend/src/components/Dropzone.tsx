@@ -1,21 +1,36 @@
 import { useRef, useState } from "react";
 import { motion } from "framer-motion";
-import { Camera, UploadCloud } from "lucide-react";
+import { Camera, Loader2, Sparkles, UploadCloud } from "lucide-react";
 
 interface Props {
   onFile: (file: File) => void;
   onWebcam: () => void;
 }
 
+/** Path to the bundled demo clip (served from /public). */
+const SAMPLE_CLIP = `${import.meta.env.BASE_URL}sample-drive.mp4`;
+
 export function Dropzone({ onFile, onWebcam }: Props) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [dragging, setDragging] = useState(false);
+  const [loadingSample, setLoadingSample] = useState(false);
 
   const handleDrop = (e: React.DragEvent) => {
     e.preventDefault();
     setDragging(false);
     const file = e.dataTransfer.files?.[0];
     if (file?.type.startsWith("video/")) onFile(file);
+  };
+
+  const loadSample = async () => {
+    try {
+      setLoadingSample(true);
+      const res = await fetch(SAMPLE_CLIP);
+      const blob = await res.blob();
+      onFile(new File([blob], "sample-drive.mp4", { type: "video/mp4" }));
+    } finally {
+      setLoadingSample(false);
+    }
   };
 
   return (
@@ -67,10 +82,20 @@ export function Dropzone({ onFile, onWebcam }: Props) {
         <span className="h-px w-10 bg-base-600" />
       </div>
 
-      <button className="btn-ghost" onClick={onWebcam}>
-        <Camera size={16} />
-        Use live webcam
-      </button>
+      <div className="flex flex-wrap items-center justify-center gap-3">
+        <button className="btn-primary" onClick={loadSample} disabled={loadingSample}>
+          {loadingSample ? (
+            <Loader2 size={16} className="animate-spin" />
+          ) : (
+            <Sparkles size={16} />
+          )}
+          Try a sample clip
+        </button>
+        <button className="btn-ghost" onClick={onWebcam}>
+          <Camera size={16} />
+          Use live webcam
+        </button>
+      </div>
     </motion.div>
   );
 }
