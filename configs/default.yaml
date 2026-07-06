@@ -1,0 +1,44 @@
+# ---------------------------------------------------------------------------
+# Default pipeline configuration.
+#
+# Every value here maps 1:1 onto the dataclasses in `app/config.py`. Copy this
+# file, tweak it, and pass it with `python -m app --config my_config.yaml`.
+# ---------------------------------------------------------------------------
+
+camera:
+  width: 640
+  height: 480
+  fps: 30
+  max_processing_width: 800
+
+detection:
+  # Pre-processing
+  gaussian_kernel: 5
+  clahe_clip_limit: 2.0
+  clahe_grid_size: 8
+
+  # Canny edge detection
+  canny_low: 50
+  canny_high: 150
+
+  # Region of interest (fractions of the frame)
+  roi_bottom_width: 0.90
+  roi_top_width: 0.20
+  roi_horizon: 0.60
+
+  # Hough transform
+  hough_rho: 2
+  hough_threshold: 40
+  hough_min_line_length: 30
+  hough_max_line_gap: 100
+
+  # Slope filtering + temporal smoothing
+  min_slope: 0.4
+  max_slope: 2.5
+  smoothing_window: 5
+
+visualization:
+  lane_thickness: 10
+  fill_alpha: 0.30
+  deviation_threshold_px: 50
+  show_hud: true

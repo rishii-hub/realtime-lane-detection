@@ -1,0 +1,39 @@
+# ---- Python ----
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+build/
+dist/
+.venv/
+venv/
+env/
+
+# ---- Testing / coverage ----
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+coverage.xml
+
+# ---- Runtime artifacts ----
+captures/
+*.log
+
+# ---- Node / frontend ----
+node_modules/
+frontend/dist/
+frontend/.vite/
+*.tsbuildinfo
+# build artifacts emitted from composite tsconfig
+frontend/vite.config.js
+frontend/vite.config.d.ts
+*.local
+
+# ---- Editors / OS ----
+.claude/
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db

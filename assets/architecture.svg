@@ -1,0 +1,70 @@
+<svg width="1000" height="520" viewBox="0 0 1000 520" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Architecture diagram" font-family="'Segoe UI',Inter,Arial,sans-serif">
+  <defs>
+    <marker id="arr" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L8,3 L0,6 Z" fill="#8B949E"/>
+    </marker>
+    <style>
+      .box{fill:#161B22;stroke:#30363D;stroke-width:1.5;rx:14;}
+      .title{fill:#E6EDF3;font-weight:700;font-size:16px;}
+      .sub{fill:#8B949E;font-size:12px;}
+      .acc{fill:#22C55E;font-weight:700;font-size:13px;}
+      .flow{stroke:#8B949E;stroke-width:2;fill:none;}
+    </style>
+  </defs>
+  <rect width="1000" height="520" fill="#0D1117"/>
+  <text x="40" y="48" fill="#E6EDF3" font-size="24" font-weight="800">System Architecture</text>
+  <text x="40" y="74" class="sub" font-size="14">Separation of concerns — an I/O-free core wrapped by thin adapters</text>
+
+  <!-- Input layer -->
+  <rect x="40" y="110" width="200" height="90" rx="14" class="box"/>
+  <text x="60" y="145" class="acc">INPUT</text>
+  <text x="60" y="168" class="title">VideoSource</text>
+  <text x="60" y="188" class="sub">webcam · file · IP camera</text>
+
+  <!-- Config (top) -->
+  <rect x="400" y="30" width="200" height="70" rx="14" class="box"/>
+  <text x="420" y="58" class="acc">CONFIG</text>
+  <text x="420" y="80" class="title">PipelineConfig</text>
+
+  <!-- Core -->
+  <rect x="360" y="130" width="280" height="260" rx="16" fill="#0B1120" stroke="#1F6FEB" stroke-width="1.5" stroke-dasharray="5 4"/>
+  <text x="380" y="158" fill="#58A6FF" font-weight="700" font-size="14">LaneDetector (core · no I/O)</text>
+
+  <rect x="384" y="176" width="232" height="44" rx="10" class="box"/>
+  <text x="400" y="203" class="title" font-size="14">Imaging stages</text>
+  <text x="470" y="203" class="sub">preprocess · canny · roi · hough</text>
+
+  <rect x="384" y="230" width="232" height="44" rx="10" class="box"/>
+  <text x="400" y="257" class="title" font-size="14">LaneEstimator</text>
+  <text x="470" y="257" class="sub" x2="0">classify · fit · smooth</text>
+
+  <rect x="384" y="284" width="232" height="44" rx="10" class="box"/>
+  <text x="400" y="311" class="title" font-size="14">MetricsTracker</text>
+  <text x="470" y="311" class="sub">fps · latency · frames</text>
+
+  <rect x="384" y="338" width="232" height="40" rx="10" class="box"/>
+  <text x="400" y="363" class="title" font-size="14">LaneRenderer</text>
+  <text x="470" y="363" class="sub">overlay · HUD</text>
+
+  <!-- Output -->
+  <rect x="760" y="110" width="200" height="90" rx="14" class="box"/>
+  <text x="780" y="145" class="acc">OUTPUT</text>
+  <text x="780" y="168" class="title">DetectionResult</text>
+  <text x="780" y="188" class="sub">frame · lanes · metrics</text>
+
+  <!-- Consumers -->
+  <rect x="760" y="250" width="200" height="60" rx="14" class="box"/>
+  <text x="780" y="278" class="title" font-size="14">CLI · python -m app</text>
+  <text x="780" y="298" class="sub">OpenCV window + keys</text>
+
+  <rect x="760" y="326" width="200" height="60" rx="14" class="box"/>
+  <text x="780" y="354" class="title" font-size="14">Dashboard</text>
+  <text x="780" y="374" class="sub">React + Vite + TS</text>
+
+  <!-- flows -->
+  <path class="flow" d="M240,155 L354,215" marker-end="url(#arr)"/>
+  <path class="flow" d="M500,100 L500,124" marker-end="url(#arr)"/>
+  <path class="flow" d="M640,230 L754,170" marker-end="url(#arr)"/>
+  <path class="flow" d="M860,200 L860,244" marker-end="url(#arr)"/>
+  <path class="flow" d="M860,310 L860,320" marker-end="url(#arr)"/>
+</svg>

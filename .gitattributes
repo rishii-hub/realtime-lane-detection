@@ -1,0 +1,14 @@
+# Normalize line endings across platforms.
+* text=auto eol=lf
+
+# Binary assets — never diff or convert.
+*.png binary
+*.jpg binary
+*.gif binary
+*.mp4 binary
+
+# Keep GitHub's language stats honest.
+frontend/package-lock.json linguist-generated=true
+samples/** linguist-vendored=true
+assets/** linguist-documentation=true
+docs/** linguist-documentation=true
