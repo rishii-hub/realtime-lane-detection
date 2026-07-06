@@ -47,10 +47,10 @@ dev = [
 lane-detect = "app.__main__:main"
 
 [project.urls]
-Homepage = "https://github.com/rishi/realtime-lane-detection"
-Repository = "https://github.com/rishi/realtime-lane-detection"
-Documentation = "https://github.com/rishi/realtime-lane-detection/tree/main/docs"
-Issues = "https://github.com/rishi/realtime-lane-detection/issues"
+Homepage = "https://github.com/rishii-hub/realtime-lane-detection"
+Repository = "https://github.com/rishii-hub/realtime-lane-detection"
+Documentation = "https://github.com/rishii-hub/realtime-lane-detection/tree/main/docs"
+Issues = "https://github.com/rishii-hub/realtime-lane-detection/issues"
 
 [tool.setuptools.packages.find]
 include = ["app*"]
@@ -72,6 +72,13 @@ python_version = "3.10"
 warn_unused_ignores = true
 warn_redundant_casts = true
 ignore_missing_imports = true
+
+# Third-party libraries without first-party stubs (or whose bundled stubs target
+# a newer Python than we type-check against) are treated as opaque.
+[[tool.mypy.overrides]]
+module = ["numpy.*", "cv2.*", "yaml.*"]
+follow_imports = "skip"
+follow_imports_for_stubs = true
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

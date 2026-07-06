@@ -63,7 +63,7 @@ The repository ships two things:
 
 ```bash
 # Clone
-git clone https://github.com/rishi/realtime-lane-detection.git
+git clone https://github.com/rishii-hub/realtime-lane-detection.git
 cd realtime-lane-detection
 
 # Install (Python 3.10+)

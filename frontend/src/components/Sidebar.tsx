@@ -60,7 +60,7 @@ export function Sidebar({ source }: { source: SourceKind }) {
         </div>
 
         <a
-          href="https://github.com/rishi/realtime-lane-detection"
+          href="https://github.com/rishii-hub/realtime-lane-detection"
           target="_blank"
           rel="noreferrer"
           className="flex items-center gap-2 rounded-xl px-3 py-2 text-xs font-medium text-ink-muted transition-colors hover:text-ink"

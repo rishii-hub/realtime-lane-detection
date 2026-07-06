@@ -33,4 +33,4 @@
 pip install -e ".[dev]"
 ```
 
-**Full Changelog**: https://github.com/rishi/realtime-lane-detection/compare/vA.B.C...vX.Y.Z
+**Full Changelog**: https://github.com/rishii-hub/realtime-lane-detection/compare/vA.B.C...vX.Y.Z

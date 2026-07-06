@@ -32,5 +32,5 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - Refactored the original single-file script into a maintainable package.
 - Replaced blocking `input()` prompts with a proper `argparse` CLI (`python -m app`).
 
-[Unreleased]: https://github.com/rishi/realtime-lane-detection/compare/v1.0.0...HEAD
-[1.0.0]: https://github.com/rishi/realtime-lane-detection/releases/tag/v1.0.0
+[Unreleased]: https://github.com/rishii-hub/realtime-lane-detection/compare/v1.0.0...HEAD
+[1.0.0]: https://github.com/rishii-hub/realtime-lane-detection/releases/tag/v1.0.0
