@@ -1,39 +1,35 @@
-export type SourceKind = "idle" | "upload" | "webcam";
+// Shared types for the LaneVision dashboard.
 
-export type EngineStatus = "idle" | "running" | "paused";
+export type LaneStatus =
+  | "CENTERED"
+  | "SEARCHING"
+  | "INITIALISING"
+  | `LANE DEPARTURE ${"LEFT" | "RIGHT"}`;
 
 export interface Metrics {
+  curvature_m: number | null;
+  offset_m: number | null;
+  status: LaneStatus;
   fps: number;
-  avgFps: number;
-  confidence: number; // 0..1
-  frameCount: number;
-  latencyMs: number;
-  deviationPx: number; // signed; negative = left, positive = right
+  confidence: number;
 }
 
-export interface DetectionSettings {
-  /** Canny / edge sensitivity, 0..1. */
-  sensitivity: number;
-  /** Hough vote threshold as a normalized 0..1 value. */
-  threshold: number;
-  showLaneFill: boolean;
-  showEdges: boolean;
-  showHud: boolean;
+export type ViewMode = "final" | "threshold" | "birdseye" | "roi";
+export type SourceKind = "demo" | "webcam";
+
+export type SignalLevel = "ok" | "warn" | "alert" | "idle";
+
+/** Map a detector status to a UI signal level. */
+export function signalFor(status: LaneStatus): SignalLevel {
+  if (status.startsWith("LANE DEPARTURE")) return "alert";
+  if (status === "CENTERED") return "ok";
+  if (status === "SEARCHING") return "warn";
+  return "idle";
 }
 
-export const DEFAULT_METRICS: Metrics = {
-  fps: 0,
-  avgFps: 0,
-  confidence: 0,
-  frameCount: 0,
-  latencyMs: 0,
-  deviationPx: 0,
-};
-
-export const DEFAULT_SETTINGS: DetectionSettings = {
-  sensitivity: 0.6,
-  threshold: 0.4,
-  showLaneFill: true,
-  showEdges: false,
-  showHud: true,
+export const SIGNAL_COLOR: Record<SignalLevel, string> = {
+  ok: "#4ade80",
+  warn: "#f5b041",
+  alert: "#ff5a52",
+  idle: "#7a8a94",
 };

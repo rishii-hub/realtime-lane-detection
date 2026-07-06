@@ -1,31 +1,21 @@
-# Pull Request
+## Summary
 
-## Description
-
-<!-- What does this PR do? Why is it needed? -->
-
-Closes #
+<!-- What does this PR change and why? -->
 
 ## Type of change
 
-- [ ] 🐛 Bug fix (non-breaking change that fixes an issue)
-- [ ] ✨ New feature (non-breaking change that adds functionality)
-- [ ] 💥 Breaking change (fix or feature that changes existing behaviour)
-- [ ] 📖 Documentation update
-- [ ] 🧹 Refactor / chore
-
-## How has this been tested?
-
-<!-- Describe the tests you ran. -->
+- [ ] Bug fix
+- [ ] New feature
+- [ ] Refactor / code quality
+- [ ] Documentation
 
 ## Checklist
 
-- [ ] My code follows the project style (`make format`)
-- [ ] `make check` passes (lint, typecheck, tests)
-- [ ] I have added tests that prove my fix/feature works
-- [ ] I have updated the documentation where needed
-- [ ] My commits follow the Conventional Commits convention
+- [ ] `make test` passes
+- [ ] `make lint` passes
+- [ ] I added or updated tests where it made sense
+- [ ] I updated documentation where it made sense
 
-## Screenshots (if UI changes)
+## Notes for reviewers
 
-<!-- Drag images here. -->
+<!-- Anything specific you'd like feedback on, screenshots, etc. -->

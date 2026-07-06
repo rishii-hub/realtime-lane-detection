@@ -1,36 +1,35 @@
-"""Shared pytest fixtures."""
-
-from __future__ import annotations
+"""Shared fixtures for the test suite."""
 
 import numpy as np
 import pytest
 
-from app.config import DetectionConfig, PipelineConfig
+FRAME_SIZE = (640, 360)
 
 
-@pytest.fixture()
-def detection_config() -> DetectionConfig:
-    return DetectionConfig()
+@pytest.fixture
+def frame_size():
+    return FRAME_SIZE
 
 
-@pytest.fixture()
-def pipeline_config() -> PipelineConfig:
-    return PipelineConfig()
+@pytest.fixture
+def blank_frame():
+    """A black BGR frame."""
+    w, h = FRAME_SIZE
+    return np.zeros((h, w, 3), dtype=np.uint8)
 
 
-@pytest.fixture()
-def blank_frame() -> np.ndarray:
-    """A 480x640 black BGR frame."""
-    return np.zeros((480, 640, 3), dtype=np.uint8)
-
-
-@pytest.fixture()
-def synthetic_lane_frame() -> np.ndarray:
-    """A black frame with two bright lane-like lines forming a 'V'."""
+@pytest.fixture
+def synthetic_lane_frame():
+    """
+    A synthetic road: dark background with two bright near-vertical lane
+    markings converging toward the horizon. Deterministic, so tests don't
+    depend on the bundled video.
+    """
     import cv2
 
-    frame = np.zeros((480, 640, 3), dtype=np.uint8)
-    # Left boundary (negative slope) and right boundary (positive slope).
-    cv2.line(frame, (120, 480), (280, 290), (255, 255, 255), 8)
-    cv2.line(frame, (520, 480), (360, 290), (255, 255, 255), 8)
+    w, h = FRAME_SIZE
+    frame = np.full((h, w, 3), 40, dtype=np.uint8)  # grey tarmac
+    # left and right lane lines converging upward
+    cv2.line(frame, (int(w * 0.20), h), (int(w * 0.44), int(h * 0.62)), (255, 255, 255), 6)
+    cv2.line(frame, (int(w * 0.80), h), (int(w * 0.56), int(h * 0.62)), (255, 255, 255), 6)
     return frame

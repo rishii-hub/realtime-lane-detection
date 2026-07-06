@@ -4,49 +4,29 @@ All notable changes to this project are documented here. The format is based on
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project
 adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
-
-### Planned
-
-- Perspective (bird's-eye) transform for curved-lane fitting
-- Polynomial lane fitting to replace straight-line Hough averaging
-- WebAssembly build of the pipeline for in-browser inference
-
-## [1.1.0] - 2026-07-06
+## [2.0.0]
 
 ### Added
-
-- **Live demo** — the dashboard is deployed to GitHub Pages on every push to
-  `main` (`deploy-pages` workflow, configurable Vite base path).
-- **One-click sample clip** — the dashboard bundles a small H.264 drive clip so
-  visitors can see detection running without hunting for a video.
-- Real dashboard screenshot and CI status badges in the README.
-
-### Fixed
-
-- Repository URLs now point at the actual GitHub slug.
-- `mypy app` passes cleanly (numpy/cv2/yaml treated as opaque imports).
-
-## [1.0.0] - 2026-07-06
-
-### Added
-
-- Modular Python package (`app/`) with a clean separation of concerns:
-  configuration, camera I/O, detection, geometry, rendering, and metrics.
-- Typed, validated configuration via dataclasses with YAML loading.
-- Temporal smoothing with rolling history to eliminate overlay flicker.
-- Full `pytest` suite covering config, geometry, utilities, and the pipeline.
-- Modern React + Vite + TypeScript + Tailwind + Framer Motion dashboard.
-- Comprehensive documentation set under `docs/`.
-- CI workflows for linting, type-checking, and testing.
-- Community health files: contributing guide, code of conduct, security policy,
-  issue/PR templates.
+- **Curve-following detection.** New pipeline: colour + gradient thresholding →
+  bird's-eye perspective warp → sliding-window search → 2nd-degree polynomial
+  fit. Tracks curved lanes instead of only straight lines.
+- Real-world **radius of curvature** and **vehicle offset** metrics, plus a
+  lane-departure status.
+- **React + TypeScript dashboard** (Vite) with a live MJPEG feed, telemetry
+  panel, a lane-position gauge, view-mode toggles, and video upload.
+- **FastAPI backend** streaming annotated frames and serving JSON telemetry.
+- Full test suite (`pytest`), linting/formatting config (`ruff`, `black`,
+  `eslint`), CI workflow, and community health files.
 
 ### Changed
+- Restructured the single-file script into a `lane_detector/` package with
+  separated threshold / perspective / fit / detector modules.
 
-- Refactored the original single-file script into a maintainable package.
-- Replaced blocking `input()` prompts with a proper `argparse` CLI (`python -m app`).
+### Preserved
+- The original v1 straight-line detector is kept under `legacy/` for reference.
 
-[Unreleased]: https://github.com/rishii-hub/realtime-lane-detection/compare/v1.1.0...HEAD
-[1.1.0]: https://github.com/rishii-hub/realtime-lane-detection/compare/v1.0.0...v1.1.0
-[1.0.0]: https://github.com/rishii-hub/realtime-lane-detection/releases/tag/v1.0.0
+## [1.0.0]
+
+### Added
+- Initial single-file detector: Canny edge detection + Hough transform +
+  temporal smoothing, visualised with an OpenCV window.

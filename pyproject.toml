@@ -1,13 +1,13 @@
 [build-system]
-requires = ["setuptools>=68", "wheel"]
+requires = ["setuptools>=61.0"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "realtime-lane-detection"
-version = "1.1.0"
-description = "Real-time lane detection with classical computer vision (Canny + Hough) and a modern dashboard."
+name = "lanevision"
+version = "2.0.0"
+description = "Real-time lane detection with curve-following classical computer vision and a React dashboard."
 readme = "README.md"
-requires-python = ">=3.10"
+requires-python = ">=3.9"
 license = { text = "MIT" }
 authors = [{ name = "Rishi" }]
 keywords = [
@@ -16,74 +16,46 @@ keywords = [
     "opencv",
     "adas",
     "self-driving",
-    "hough-transform",
 ]
 classifiers = [
-    "Development Status :: 5 - Production/Stable",
-    "Intended Audience :: Developers",
+    "Programming Language :: Python :: 3",
     "License :: OSI Approved :: MIT License",
-    "Programming Language :: Python :: 3.10",
-    "Programming Language :: Python :: 3.11",
-    "Programming Language :: Python :: 3.12",
     "Topic :: Scientific/Engineering :: Image Recognition",
 ]
 dependencies = [
-    "numpy>=1.24",
     "opencv-python>=4.8",
-    "pyyaml>=6.0",
+    "numpy>=1.24",
+    "fastapi>=0.110",
+    "uvicorn[standard]>=0.27",
+    "python-multipart>=0.0.9",
 ]
 
 [project.optional-dependencies]
-dev = [
-    "pytest>=7.4",
-    "pytest-cov>=4.1",
-    "ruff>=0.4",
-    "black>=24.0",
-    "mypy>=1.8",
-    "pre-commit>=3.6",
-]
+dev = ["pytest>=8.0", "ruff>=0.4", "black>=24.0"]
 
 [project.scripts]
-lane-detect = "app.__main__:main"
+lanevision = "cli:main"
 
 [project.urls]
-Homepage = "https://github.com/rishii-hub/realtime-lane-detection"
 Repository = "https://github.com/rishii-hub/realtime-lane-detection"
-Documentation = "https://github.com/rishii-hub/realtime-lane-detection/tree/main/docs"
-Issues = "https://github.com/rishii-hub/realtime-lane-detection/issues"
 
-[tool.setuptools.packages.find]
-include = ["app*"]
-
-[tool.ruff]
-line-length = 100
-target-version = "py310"
-
-[tool.ruff.lint]
-select = ["E", "F", "I", "N", "UP", "B", "C4", "SIM"]
-ignore = ["B008"]
+[tool.setuptools]
+packages = ["lane_detector"]
+py-modules = ["cli", "app"]
 
 [tool.black]
 line-length = 100
-target-version = ["py310"]
+target-version = ["py39"]
 
-[tool.mypy]
-python_version = "3.10"
-warn_unused_ignores = true
-warn_redundant_casts = true
-ignore_missing_imports = true
+[tool.ruff]
+line-length = 100
+target-version = "py39"
 
-# Third-party libraries without first-party stubs (or whose bundled stubs target
-# a newer Python than we type-check against) are treated as opaque.
-[[tool.mypy.overrides]]
-module = ["numpy.*", "cv2.*", "yaml.*"]
-follow_imports = "skip"
-follow_imports_for_stubs = true
+[tool.ruff.lint]
+select = ["E", "F", "I", "W", "UP", "B"]
+# B008: FastAPI relies on function calls (File(...), Depends(...)) in defaults
+ignore = ["B008"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
-addopts = "-ra -q"
-
-[tool.coverage.run]
-source = ["app"]
-omit = ["app/__main__.py", "app/runner.py"]
+addopts = "-q"

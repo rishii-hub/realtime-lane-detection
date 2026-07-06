@@ -1,49 +1,53 @@
-"""Integration tests for the end-to-end detector and metrics tracker."""
+"""Integration tests for the LaneDetector orchestrator."""
 
-from __future__ import annotations
+import os
 
-from app.detector import DetectionResult, LaneDetector
-from app.metrics import MetricsTracker
+import numpy as np
+import pytest
 
+from lane_detector import LaneDetector
 
-def test_process_returns_result(pipeline_config, synthetic_lane_frame) -> None:
-    detector = LaneDetector(pipeline_config)
-    result = detector.process(synthetic_lane_frame)
-    assert isinstance(result, DetectionResult)
-    assert result.annotated.shape == synthetic_lane_frame.shape
-    assert result.edges.ndim == 2
+DEMO_VIDEO = os.path.join(os.path.dirname(os.path.dirname(__file__)), "test3.mp4")
 
 
-def test_process_detects_synthetic_lanes(pipeline_config, synthetic_lane_frame) -> None:
-    detector = LaneDetector(pipeline_config)
-    result = detector.process(synthetic_lane_frame)
-    # The synthetic 'V' should yield at least one boundary.
-    assert result.lanes.lanes
+def test_process_returns_same_size_bgr(synthetic_lane_frame, frame_size):
+    det = LaneDetector(frame_size=frame_size)
+    out = det.process(synthetic_lane_frame)
+    assert out.shape == (frame_size[1], frame_size[0], 3)
+    assert out.dtype == np.uint8
 
 
-def test_process_blank_frame_is_safe(pipeline_config, blank_frame) -> None:
-    detector = LaneDetector(pipeline_config)
-    result = detector.process(blank_frame)
-    assert result.lanes.lanes == []
-    assert result.metrics.frame_count == 1
+def test_metrics_schema(synthetic_lane_frame, frame_size):
+    det = LaneDetector(frame_size=frame_size)
+    det.process(synthetic_lane_frame)
+    m = det.metrics()
+    assert set(m.keys()) == {"curvature_m", "offset_m", "status", "fps", "confidence"}
+    assert 0.0 <= m["confidence"] <= 1.0
 
 
-def test_reset_clears_metrics(pipeline_config, blank_frame) -> None:
-    detector = LaneDetector(pipeline_config)
-    detector.process(blank_frame)
-    detector.reset()
-    assert detector.metrics.frame_count == 0
+@pytest.mark.parametrize("mode", ["final", "threshold", "birdseye", "roi"])
+def test_view_modes_render(synthetic_lane_frame, frame_size, mode):
+    det = LaneDetector(frame_size=frame_size)
+    out = det.process(synthetic_lane_frame, view_mode=mode)
+    assert out.shape == (frame_size[1], frame_size[0], 3)
 
 
-def test_metrics_tracker_records_fps() -> None:
-    tracker = MetricsTracker(window=5)
-    metrics = tracker.record(elapsed_s=0.02)  # 50 FPS
-    assert metrics.fps == 50.0
-    assert metrics.frame_count == 1
-    assert metrics.latency_ms == 20.0
+@pytest.mark.skipif(not os.path.exists(DEMO_VIDEO), reason="demo video not present")
+def test_high_detection_rate_on_demo_clip(frame_size):
+    """The pipeline should lock onto lanes for the large majority of frames."""
+    import cv2
 
-
-def test_metrics_tracker_zero_elapsed_is_safe() -> None:
-    tracker = MetricsTracker()
-    metrics = tracker.record(elapsed_s=0.0)
-    assert metrics.fps == 0.0
+    det = LaneDetector(frame_size=frame_size)
+    cap = cv2.VideoCapture(DEMO_VIDEO)
+    frames, locked = 0, 0
+    while frames < 300:
+        ret, frame = cap.read()
+        if not ret:
+            break
+        det.process(frame)
+        frames += 1
+        if det.status not in ("SEARCHING", "INITIALISING"):
+            locked += 1
+    cap.release()
+    assert frames > 0
+    assert locked / frames > 0.8  # expect a strong lock rate

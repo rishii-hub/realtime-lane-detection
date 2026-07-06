@@ -1,0 +1,54 @@
+.topbar {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 32px;
+  border-bottom: 1px solid var(--hairline);
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.mark {
+  width: 30px;
+  height: 30px;
+  border-radius: 3px;
+  background: linear-gradient(
+      135deg,
+      transparent 45%,
+      var(--hud) 45%,
+      var(--hud) 55%,
+      transparent 55%
+    ),
+    linear-gradient(135deg, transparent 65%, var(--hud) 65%, var(--hud) 72%, transparent 72%);
+  border: 1px solid var(--hairline-lit);
+  box-shadow: 0 0 12px rgba(57, 208, 216, 0.25);
+}
+
+.name {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 20px;
+  letter-spacing: 1.5px;
+  line-height: 1;
+}
+
+.sub {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 3px;
+  color: var(--muted);
+  margin-top: 4px;
+  text-transform: uppercase;
+}
+
+@media (max-width: 560px) {
+  .topbar {
+    padding: 16px 18px;
+  }
+}

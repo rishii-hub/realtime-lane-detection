@@ -1,15 +1,20 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 
-// https://vitejs.dev/config/
-//
-// `VITE_BASE` lets CI build for a sub-path deployment (GitHub Pages serves the
-// app from /realtime-lane-detection/); local dev and preview default to "/".
+// In dev, proxy API + MJPEG stream to the FastAPI backend on :8000.
+// In prod, `npm run build` emits to ../static/dist, which FastAPI serves.
 export default defineConfig({
-  base: process.env.VITE_BASE ?? "/",
   plugins: [react()],
+  build: {
+    outDir: "../static/dist",
+    emptyOutDir: true,
+  },
   server: {
-    port: 5173,
-    open: true,
+    proxy: {
+      "/api": {
+        target: "http://localhost:8000",
+        changeOrigin: true,
+      },
+    },
   },
 });

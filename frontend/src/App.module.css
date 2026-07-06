@@ -1,0 +1,29 @@
+.viewportPanel {
+  display: flex;
+  flex-direction: column;
+}
+
+.footer {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 32px;
+  border-top: 1px solid var(--hairline);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 1px;
+  color: var(--muted-dim);
+}
+
+.sep {
+  color: var(--hairline-lit);
+}
+
+@media (max-width: 560px) {
+  .footer {
+    flex-wrap: wrap;
+    padding: 14px 18px;
+  }
+}

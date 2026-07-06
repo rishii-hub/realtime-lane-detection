@@ -1,88 +1,109 @@
-@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap");
+/* ============================================================
+   LaneVision — global tokens & scaffold (night instrument cluster)
+   ============================================================ */
+:root {
+  --base: #0e1418;
+  --surface: #161e24;
+  --surface-2: #1c262d;
+  --hairline: #2a363e;
+  --hairline-lit: #38484f;
+  --ink: #e6edf1;
+  --muted: #7a8a94;
+  --muted-dim: #566068;
 
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+  --hud: #39d0d8;
+  --signal-ok: #4ade80;
+  --signal-warn: #f5b041;
+  --signal-alert: #ff5a52;
 
-@layer base {
-  * {
-    @apply border-base-600/40;
-  }
+  --r: 4px;
+  --shadow: 0 18px 50px rgba(0, 0, 0, 0.45);
 
-  html,
-  body,
-  #root {
-    @apply h-full;
-  }
-
-  body {
-    @apply bg-base-950 text-ink font-sans antialiased;
-    background-image: radial-gradient(
-        60rem 40rem at 80% -10%,
-        rgba(34, 197, 94, 0.06),
-        transparent 60%
-      ),
-      radial-gradient(
-        50rem 40rem at 0% 0%,
-        rgba(88, 166, 255, 0.05),
-        transparent 55%
-      );
-  }
-
-  ::selection {
-    @apply bg-accent/30 text-white;
-  }
+  --font-display: "Chakra Petch", system-ui, sans-serif;
+  --font-body: "Space Grotesk", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, monospace;
 }
 
-@layer components {
-  .card {
-    @apply rounded-2xl border border-base-600/60 bg-base-900/70 shadow-card backdrop-blur-sm;
-  }
-
-  .card-glass {
-    @apply rounded-2xl border border-white/5 bg-white/[0.03] shadow-card backdrop-blur-md;
-  }
-
-  .chip {
-    @apply inline-flex items-center gap-1.5 rounded-full border border-base-600/70 bg-base-800/80 px-2.5 py-1 text-xs font-medium text-ink-muted;
-  }
-
-  .btn {
-    @apply inline-flex items-center justify-center gap-2 rounded-xl px-3.5 py-2 text-sm font-semibold transition-all duration-150 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent/60 disabled:cursor-not-allowed disabled:opacity-40;
-  }
-
-  .btn-primary {
-    @apply btn bg-accent text-base-950 hover:bg-accent-soft active:scale-[0.98];
-  }
-
-  .btn-ghost {
-    @apply btn border border-base-600/70 bg-base-800/60 text-ink hover:border-base-500 hover:bg-base-700/60 active:scale-[0.98];
-  }
-
-  .label {
-    @apply text-xs font-medium uppercase tracking-wider text-ink-faint;
-  }
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
 
-/* Custom range slider */
-input[type="range"] {
-  @apply h-1.5 w-full cursor-pointer appearance-none rounded-full bg-base-700;
-}
-input[type="range"]::-webkit-slider-thumb {
-  @apply h-4 w-4 appearance-none rounded-full bg-accent shadow-[0_0_0_4px_rgba(34,197,94,0.15)] transition-transform hover:scale-110;
-}
-input[type="range"]::-moz-range-thumb {
-  @apply h-4 w-4 rounded-full border-0 bg-accent;
+html,
+body,
+#root {
+  min-height: 100vh;
 }
 
-/* Thin scrollbar */
-::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+body {
+  font-family: var(--font-body);
+  background: var(--base);
+  color: var(--ink);
+  overflow-x: hidden;
 }
-::-webkit-scrollbar-thumb {
-  @apply rounded-full bg-base-600;
+
+.app {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
 }
-::-webkit-scrollbar-track {
-  @apply bg-transparent;
+
+/* faint engineering grid behind everything */
+.grid-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background-image: linear-gradient(var(--hairline) 1px, transparent 1px),
+    linear-gradient(90deg, var(--hairline) 1px, transparent 1px);
+  background-size: 48px 48px;
+  opacity: 0.12;
+  -webkit-mask-image: radial-gradient(ellipse 90% 70% at 50% 30%, #000 40%, transparent 100%);
+  mask-image: radial-gradient(ellipse 90% 70% at 50% 30%, #000 40%, transparent 100%);
+}
+
+.console {
+  position: relative;
+  z-index: 1;
+  flex: 1;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 340px;
+  gap: 24px;
+  padding: 28px 32px;
+  max-width: 1400px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+.eyebrow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 3px;
+  color: var(--muted);
+  text-transform: uppercase;
+  margin-bottom: 12px;
+}
+
+@media (max-width: 900px) {
+  .console {
+    grid-template-columns: 1fr;
+  }
+}
+@media (max-width: 560px) {
+  .console {
+    padding: 18px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition: none !important;
+  }
 }

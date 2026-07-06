@@ -1,0 +1,45 @@
+.badge {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 2px;
+  padding: 8px 16px;
+  border: 1px solid var(--hairline);
+  border-radius: var(--r);
+  background: var(--surface);
+}
+
+.dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--muted);
+  box-shadow: 0 0 8px currentColor;
+  transition: background 0.3s, box-shadow 0.3s;
+}
+
+.idle {
+  background: var(--muted);
+  color: var(--muted);
+}
+.ok {
+  background: var(--signal-ok);
+  color: var(--signal-ok);
+}
+.warn {
+  background: var(--signal-warn);
+  color: var(--signal-warn);
+}
+.alert {
+  background: var(--signal-alert);
+  color: var(--signal-alert);
+  animation: pulse 0.8s infinite;
+}
+
+@keyframes pulse {
+  50% {
+    opacity: 0.3;
+  }
+}

@@ -1,82 +1,48 @@
-import { motion } from "framer-motion";
-import { useDetectionEngine } from "./hooks/useDetectionEngine";
-import { Sidebar } from "./components/Sidebar";
+import { useCallback, useState } from "react";
+import { useMetrics } from "./hooks/useMetrics";
+import { setViewMode } from "./api";
+import type { ViewMode } from "./types";
 import { TopBar } from "./components/TopBar";
-import { VideoStage } from "./components/VideoStage";
-import { MetricsPanel } from "./components/MetricsPanel";
-import { ControlPanel } from "./components/ControlPanel";
+import { VideoViewport } from "./components/VideoViewport";
+import { ViewModeToggle } from "./components/ViewModeToggle";
+import { TelemetryPanel } from "./components/TelemetryPanel";
+import styles from "./App.module.css";
 
 export default function App() {
-  const engine = useDetectionEngine();
+  const metrics = useMetrics(250);
+  const [view, setView] = useState<ViewMode>("final");
+  const [streamKey, setStreamKey] = useState(0);
+
+  const onViewChange = useCallback(async (mode: ViewMode) => {
+    setView(mode);
+    await setViewMode(mode);
+  }, []);
+
+  // Force the MJPEG connection to re-open after switching source
+  const reloadStream = useCallback(() => setStreamKey((k) => k + 1), []);
 
   return (
-    <div className="flex h-full w-full overflow-hidden">
-      <Sidebar source={engine.source} />
+    <div className="app">
+      <div className="grid-overlay" aria-hidden />
 
-      <div className="flex min-w-0 flex-1 flex-col">
-        <TopBar status={engine.status} fps={engine.metrics.avgFps} />
+      <TopBar status={metrics.status} />
 
-        <main className="flex-1 overflow-y-auto p-5 lg:p-8">
-          <div className="mx-auto grid max-w-7xl grid-cols-1 gap-5 xl:grid-cols-[1fr_340px]">
-            {/* Left: video stage + info */}
-            <motion.section
-              initial={{ opacity: 0, y: 12 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.4 }}
-              className="min-w-0 space-y-5"
-            >
-              <VideoStage
-                videoRef={engine.videoRef}
-                canvasRef={engine.canvasRef}
-                hasMedia={engine.hasMedia}
-                status={engine.status}
-                source={engine.source}
-                error={engine.error}
-                onFile={engine.loadFile}
-                onWebcam={engine.startWebcam}
-              />
+      <main className="console">
+        <section className={styles.viewportPanel}>
+          <VideoViewport streamKey={streamKey} />
+          <ViewModeToggle value={view} onChange={onViewChange} />
+        </section>
 
-              <div className="grid grid-cols-1 gap-5 sm:grid-cols-3">
-                <InfoTile
-                  title="Pipeline"
-                  body="Grayscale → CLAHE → Canny → ROI mask → Hough → temporal smoothing."
-                />
-                <InfoTile
-                  title="On-device"
-                  body="Runs entirely in your browser — no upload, no server, no tracking."
-                />
-                <InfoTile
-                  title="Companion UI"
-                  body="A visual front-end for the production Python detector in this repo."
-                />
-              </div>
-            </motion.section>
+        <TelemetryPanel metrics={metrics} onSourceChanged={reloadStream} />
+      </main>
 
-            {/* Right: metrics + controls */}
-            <aside className="space-y-5">
-              <MetricsPanel metrics={engine.metrics} />
-              <ControlPanel
-                status={engine.status}
-                hasMedia={engine.hasMedia}
-                settings={engine.settings}
-                onStart={engine.start}
-                onPause={engine.pause}
-                onReset={engine.reset}
-                onSettings={engine.updateSettings}
-              />
-            </aside>
-          </div>
-        </main>
-      </div>
-    </div>
-  );
-}
-
-function InfoTile({ title, body }: { title: string; body: string }) {
-  return (
-    <div className="card p-4">
-      <p className="text-sm font-semibold text-ink">{title}</p>
-      <p className="mt-1.5 text-xs leading-relaxed text-ink-muted">{body}</p>
+      <footer className={styles.footer}>
+        <span>
+          Colour + gradient threshold → perspective warp → sliding-window polyfit
+        </span>
+        <span className={styles.sep}>/</span>
+        <span>OpenCV · FastAPI · React</span>
+      </footer>
     </div>
   );
 }

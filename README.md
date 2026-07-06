@@ -1,277 +1,200 @@
 <div align="center">
-  <img src="assets/banner.svg" alt="Real-Time Lane Detection" width="100%" />
 
-  <h1>Real-Time Lane Detection</h1>
+# 🛣️ LaneVision
 
-  <p><strong>A fast, interpretable lane-detection pipeline built on classical computer vision — plus a modern dashboard to drive it.</strong></p>
+### Real-time lane detection that follows curves — with a live telemetry dashboard
 
-  <p>
-    <a href="https://rishii-hub.github.io/realtime-lane-detection/"><img src="https://img.shields.io/badge/▶_Live_Demo-22c55e?style=for-the-badge&logoColor=black" alt="Live Demo" /></a>
-    <a href="#-quick-start"><img src="https://img.shields.io/badge/Get_Started-0d1117?style=for-the-badge&logo=rocket&logoColor=22c55e" alt="Get Started" /></a>
-    <a href="docs/"><img src="https://img.shields.io/badge/Documentation-0d1117?style=for-the-badge&logo=readthedocs&logoColor=white" alt="Docs" /></a>
-  </p>
+Colour + gradient thresholding → bird's-eye perspective warp → sliding-window
+polynomial fit. Fast, interpretable classical computer vision, wrapped in a
+React dashboard styled like an automotive instrument cluster.
 
-  <p>
-    <a href="https://github.com/rishii-hub/realtime-lane-detection/actions/workflows/tests.yml"><img src="https://github.com/rishii-hub/realtime-lane-detection/actions/workflows/tests.yml/badge.svg" alt="Tests" /></a>
-    <a href="https://github.com/rishii-hub/realtime-lane-detection/actions/workflows/lint.yml"><img src="https://github.com/rishii-hub/realtime-lane-detection/actions/workflows/lint.yml/badge.svg" alt="Lint" /></a>
-    <a href="https://github.com/rishii-hub/realtime-lane-detection/actions/workflows/deploy-pages.yml"><img src="https://github.com/rishii-hub/realtime-lane-detection/actions/workflows/deploy-pages.yml/badge.svg" alt="Deploy" /></a>
-  </p>
+[![CI](https://github.com/rishii-hub/realtime-lane-detection/actions/workflows/ci.yml/badge.svg)](https://github.com/rishii-hub/realtime-lane-detection/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-39d0d8.svg)](LICENSE)
+![Python](https://img.shields.io/badge/Python-3.9%2B-3776AB?logo=python&logoColor=white)
+![OpenCV](https://img.shields.io/badge/OpenCV-4.8%2B-5C3EE8?logo=opencv&logoColor=white)
+![React](https://img.shields.io/badge/React-18-61DAFB?logo=react&logoColor=black)
+![TypeScript](https://img.shields.io/badge/TypeScript-strict-3178C6?logo=typescript&logoColor=white)
 
-  <p>
-    <img src="https://img.shields.io/badge/Python-3.10+-3776AB?logo=python&logoColor=white" alt="Python" />
-    <img src="https://img.shields.io/badge/OpenCV-4.8+-5C3EE8?logo=opencv&logoColor=white" alt="OpenCV" />
-    <img src="https://img.shields.io/badge/React-18-61DAFB?logo=react&logoColor=black" alt="React" />
-    <img src="https://img.shields.io/badge/TypeScript-strict-3178C6?logo=typescript&logoColor=white" alt="TypeScript" />
-    <img src="https://img.shields.io/badge/code%20style-black-000000.svg" alt="Black" />
-    <img src="https://img.shields.io/badge/License-MIT-f0b429.svg" alt="License" />
-  </p>
 </div>
+
+![Dashboard](docs/dashboard.png)
 
 ---
 
-## 📖 Overview
+## Overview
 
-**Real-Time Lane Detection** turns a live camera or video stream into an annotated
-lane overlay — the same idea behind the lane-keeping assist in modern cars. It
-uses **classical computer vision** (Canny edge detection + Hough transform +
-temporal smoothing), so it runs in real time on a plain CPU with zero training
-data and fully interpretable behaviour.
+Most beginner lane detectors use Canny edge detection plus a Hough transform,
+which can only fit **straight lines** and treats every strong edge — shadows,
+cracks, other cars — as a lane candidate. LaneVision takes the more robust
+"advanced lane finding" approach: it isolates lane pixels by **colour**, warps
+the road to a **bird's-eye view**, and fits a **polynomial** to each lane so it
+tracks curves. It then reports real-world **curvature** and **vehicle offset**,
+and raises a **lane-departure** flag — the same signals a production lane-keep
+system exposes.
 
-The repository ships two things:
+## Features
 
-1. 🐍 **A production-style Python package** (`app/`) — a clean, tested,
-   configuration-driven detection pipeline.
-2. ⚛️ **A modern React dashboard** (`frontend/`) — a dark, minimal UI to run the
-   detector on an uploaded clip or your webcam, with live metrics and controls.
+- **Follows curves**, not just straight lines — 2nd-degree polynomial fit per lane
+- **Robust pixel selection** — HLS lightness (white) + LAB b-channel (yellow) +
+  Sobel gradient, so shadows and tar seams don't fool it
+- **Real metrics** — radius of curvature (m), vehicle offset (m), lane-departure status
+- **Live dashboard** — MJPEG feed, telemetry panel, lane-position gauge, view-mode
+  toggles, and drag-to-upload video
+- **Four view modes** — final detection, threshold mask, bird's-eye warp, warp region
+- **Runs anywhere frames come from** — bundled demo clip, webcam, or an uploaded file
+- **Actually tested** — 22 pytest cases including a real-video detection-rate check,
+  plus CI running ruff / black / eslint / tsc / build
 
-<div align="center">
-  <img src="assets/demo.gif" alt="Lane detection demo" width="70%" />
-  <br/>
-  <sub>Real output from the pipeline running on the bundled sample clip.</sub>
-</div>
+## Pipeline
 
-## ✨ Features
+![Pipeline stages](docs/pipeline.png)
 
-- 🛣️ **Robust lane detection** — Canny + probabilistic Hough with slope filtering
-- 🎯 **Temporal smoothing** — rolling history eliminates flicker and bridges dropouts
-- 🧭 **Lane-departure metric** — signed pixel offset from lane centre with warnings
-- ⚡ **Real-time performance** — ~90+ FPS of compute headroom on a mid-range CPU
-- 🎛️ **Fully configurable** — every parameter is a typed, validated dataclass (or YAML)
-- 🧱 **Clean architecture** — an I/O-free core, separated concerns, 90%+ test coverage
-- 🖥️ **Multi-source input** — webcam, video files, or IP-camera streams
-- 🎨 **Modern dashboard** — drag-and-drop upload, live metrics, motion, dark mode
-- 🧪 **Batteries included** — CI, pre-commit, docs, examples, community health files
+```
+frame
+  → colour + gradient threshold      (HLS L, LAB b, Sobel-x → binary mask)
+  → perspective warp                 (road plane → bird's-eye)
+  → sliding-window / prior search    (collect lane pixels per vertical window)
+  → 2nd-degree polynomial fit        (x = a·y² + b·y + c  per lane)
+  → sanity check + temporal smoothing
+  → unwarp lane polygon onto frame + curvature / offset / status / FPS
+```
 
-## 🚀 Quick Start
+A full walkthrough of each stage — with the reasoning behind it — is in
+[`docs/PIPELINE.md`](docs/PIPELINE.md). The system design is in
+[`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md).
 
-### Python pipeline
+## Tech stack
+
+| Layer      | Tools                                                        |
+| ---------- | ----------------------------------------------------------- |
+| Vision     | Python · OpenCV · NumPy                                      |
+| Backend    | FastAPI · Uvicorn (MJPEG streaming + JSON telemetry)        |
+| Frontend   | React 18 · TypeScript (strict) · Vite · CSS Modules         |
+| Quality    | pytest · ruff · black · eslint · GitHub Actions             |
+
+## Quick start
 
 ```bash
-# Clone
 git clone https://github.com/rishii-hub/realtime-lane-detection.git
 cd realtime-lane-detection
 
-# Install (Python 3.10+)
-pip install -r requirements.txt        # or: pip install -e ".[dev]"
+# 1. Python dependencies
+pip install -r requirements.txt
 
-# Run on the bundled sample clip
-python -m app --source samples/highway_drive.mp4
+# 2. Build the dashboard (one time)
+cd frontend && npm install && npm run build && cd ..
 
-# ...or your webcam
-python -m app --source 0
+# 3. Run
+python app.py            # → open http://localhost:8000
 ```
 
-> **Controls:** `Q` quit · `P` pause/resume · `E` toggle edge view · `S` save frame
-
-### Dashboard
-
-> **No install needed** — try the hosted dashboard at
-> **[rishii-hub.github.io/realtime-lane-detection](https://rishii-hub.github.io/realtime-lane-detection/)**
-> and click *"Try a sample clip"*.
+Prefer a desktop window or a headless benchmark instead of the web UI?
 
 ```bash
-cd frontend
-npm install
-npm run dev        # → http://localhost:5173
+python cli.py                        # OpenCV window on the demo clip
+python cli.py --source 0             # webcam
+python cli.py --source path/to.mp4   # any video file
+python cli.py --source demo --benchmark   # print detection rate + fps, no window
 ```
 
-<div align="center">
-  <img src="assets/screenshots/dashboard.jpg" alt="Dashboard running lane detection on the sample clip" width="90%" />
-  <br/>
-  <sub>The dashboard processing the bundled sample clip — live overlay, metrics, and controls.</sub>
-</div>
-
-## 🏗️ Architecture
-
-The core is deliberately **I/O-free**: `LaneDetector.process(frame)` takes an
-image and returns a `DetectionResult`. All camera/window/file handling lives in
-thin adapters around it, so the pipeline is trivially testable and embeddable.
-
-<div align="center">
-  <img src="assets/architecture.svg" alt="Architecture diagram" width="90%" />
-</div>
-
-## 🔬 Pipeline
-
-<div align="center">
-  <img src="assets/pipeline.svg" alt="Detection pipeline" width="95%" />
-</div>
-
-| Stage | What happens |
-| ----- | ------------ |
-| **1. Capture** | Read a BGR frame from webcam / file / IP camera |
-| **2. Pre-process** | Downscale wide frames for speed |
-| **3. Edges** | Grayscale → Gaussian blur → CLAHE → Canny |
-| **4. ROI** | Mask a trapezoidal region ahead of the vehicle |
-| **5. Hough** | Probabilistic Hough transform → line segments |
-| **6. Estimate** | Slope filter → classify L/R → median fit → temporal smoothing |
-| **7. Render** | Lane fill, boundaries, deviation, and HUD |
-
-> 📚 Deep dive: [How Detection Works](docs/HowDetectionWorks.md) ·
-> [Pipeline](docs/Pipeline.md) · [Architecture](docs/Architecture.md)
-
-## 🧰 Tech Stack
-
-| Layer | Technologies |
-| ----- | ------------ |
-| **Detection** | Python 3.10+ · OpenCV · NumPy |
-| **Config** | dataclasses · PyYAML |
-| **Dashboard** | React 18 · Vite · TypeScript · Tailwind CSS · Framer Motion |
-| **Quality** | pytest · ruff · black · mypy · pre-commit |
-| **CI/CD** | GitHub Actions (lint · types · tests · build) |
-
-## 📸 Screenshots
-
-Output of the Python pipeline (`python -m app`) on the bundled sample clip:
-
-<div align="center">
-  <img src="assets/screenshots/screenshot_1.jpg" width="49%" />
-  <img src="assets/screenshots/screenshot_3.jpg" width="49%" />
-  <br/>
-  <img src="assets/screenshots/screenshot_2.jpg" width="49%" />
-  <img src="assets/screenshots/screenshot_4.jpg" width="49%" />
-</div>
-
-## ⚙️ Configuration
-
-Every tunable parameter is a validated dataclass and can be overridden with YAML:
+If you have `make`, every common task is wrapped:
 
 ```bash
-python -m app --source samples/highway_drive.mp4 --config configs/default.yaml
+make build   # build the frontend
+make run     # start the dashboard
+make test    # run pytest
+make lint    # ruff + eslint
+make bench   # headless benchmark
 ```
 
-```yaml
-detection:
-  canny_low: 50
-  canny_high: 150
-  roi_horizon: 0.60
-  hough_threshold: 40
-  smoothing_window: 5
-```
+## Usage
 
-Full reference: [docs/Configuration.md](docs/Configuration.md).
+In the dashboard:
 
-## 🧪 Usage as a library
+- **Input source** — switch between the bundled demo clip, your webcam, or an
+  uploaded video.
+- **View mode** — flip between the final detection overlay and the intermediate
+  stages (threshold mask, bird's-eye warp, warp region) to see how it works.
+- **Telemetry** — curvature, process rate, track confidence, and a live
+  lane-position gauge update several times a second.
 
-```python
-import cv2
-from app import LaneDetector, PipelineConfig
+## Configuration
 
-detector = LaneDetector(PipelineConfig())
-frame = cv2.imread("frame.jpg")
+The pipeline is intentionally configurable in code rather than hidden behind
+magic numbers:
 
-result = detector.process(frame)
-print(result.metrics.fps, result.lanes.deviation_px(frame.shape[1]))
-cv2.imwrite("annotated.png", result.annotated)
-```
+| What                        | Where                              |
+| --------------------------- | ---------------------------------- |
+| Bird's-eye trapezoid points | `lane_detector/perspective.py`     |
+| Metres-per-pixel scaling    | `lane_detector/lane_fit.py`        |
+| Colour / gradient thresholds| `lane_detector/thresholding.py`    |
+| Smoothing window, departure threshold | `lane_detector/detector.py` |
 
-More runnable examples in [`examples/`](examples/).
+The perspective region and scaling are tuned for a forward-facing dashcam with
+the horizon near the vertical middle of the frame; a different camera mounting
+needs those re-tuned.
 
-## 📊 Performance
+## Performance
 
-Measured on a mid-range laptop CPU (640×480 input):
+Measured on the bundled 1,734-frame highway clip (640×360) on CPU:
 
-| Stage | Time | Share |
-| ----- | ---- | ----- |
-| Edge detection | ~3.1 ms | 33% |
-| Hough transform | ~4.2 ms | 45% |
-| Everything else | ~2.2 ms | 22% |
-| **Total** | **~9.5 ms** | **100%** |
+| Metric                    | Value       |
+| ------------------------- | ----------- |
+| End-to-end processing     | ~52 fps avg |
+| Frames with a valid lock  | 100%        |
+| Curvature on straights    | very large radius (near-straight) |
+| Curvature through curves  | a few hundred metres |
 
-That's **~90–120 FPS** of headroom on the algorithm itself. See
-[docs/Performance.md](docs/Performance.md) for the breakdown and tuning guide.
+> Numbers are from `python cli.py --source demo --benchmark` on the included
+> clip; they'll vary with your CPU and footage. Run it yourself to reproduce.
 
-## 📁 Project Structure
+## Project structure
 
 ```
 realtime-lane-detection/
-├── app/                      # 🐍 Python detection package
-│   ├── config.py             #    Typed, validated configuration
-│   ├── camera.py             #    Context-managed video source
-│   ├── detector.py           #    Pipeline orchestrator (I/O-free)
-│   ├── lane.py               #    Geometry: classify · fit · smooth
-│   ├── visualization.py      #    Overlay + HUD rendering
-│   ├── metrics.py            #    FPS / latency tracking
-│   ├── runner.py             #    Interactive OpenCV window
-│   └── __main__.py           #    CLI entry point
-├── frontend/                 # ⚛️ React + Vite + TS dashboard
-├── docs/                     # 📚 Architecture, pipeline, performance
-├── examples/                 # ▶️ Runnable usage examples
-├── tests/                    # 🧪 pytest suite
-├── configs/                  # ⚙️ YAML configuration presets
-├── assets/                   # 🎨 Banner, logo, diagrams, screenshots
-├── samples/                  # 🎞️ Sample driving clip
-├── .github/                  # 🤖 CI workflows + issue/PR templates
-├── pyproject.toml
-├── Makefile
-└── README.md
+├── lane_detector/          # pure CV package (no web/GUI deps)
+│   ├── thresholding.py     #   colour + gradient masks
+│   ├── perspective.py      #   bird's-eye warp / unwarp
+│   ├── lane_fit.py         #   sliding-window search, polyfit, curvature
+│   └── detector.py         #   orchestration, smoothing, rendering, HUD
+├── app.py                  # FastAPI server (MJPEG stream + telemetry)
+├── cli.py                  # desktop / headless runner
+├── frontend/               # React + TypeScript dashboard (Vite)
+│   └── src/{components,hooks,api.ts,types.ts,App.tsx}
+├── tests/                  # pytest suite (unit + real-video integration)
+├── docs/                   # architecture + pipeline write-ups and diagrams
+├── legacy/                 # original v1 straight-line detector (reference)
+└── test3.mp4               # bundled demo clip
 ```
 
-## 🛠️ Developer Experience
+## Testing
 
 ```bash
-make install-dev   # install with dev tooling
-make run           # run the detector (SOURCE=... to override)
-make test          # pytest + coverage
-make lint          # ruff
-make format        # black + ruff --fix
-make check         # lint + typecheck + tests
-make frontend      # start the dashboard
+pytest                 # 22 tests: thresholding, perspective, fit, integration
 ```
 
-## 🗺️ Roadmap
+The suite includes an integration test that runs the real demo clip through the
+pipeline and asserts a high lane-lock rate, so regressions in detection quality
+fail CI — not just crashes.
 
-- [ ] Perspective (bird's-eye) transform for curved lanes
-- [ ] Polynomial lane fitting to replace straight-line averaging
-- [ ] Curvature & radius estimation
-- [ ] WebAssembly build so the dashboard runs the *real* pipeline in-browser
-- [ ] Optional deep-learning segmentation backend (toggleable)
-- [ ] Export annotated video from the dashboard
+## Roadmap
 
-See the [CHANGELOG](CHANGELOG.md) for released work.
+- [ ] Port the pipeline to TypeScript/WebGL for a zero-backend GitHub Pages demo
+- [ ] Adaptive perspective calibration instead of a fixed trapezoid
+- [ ] Vehicle / obstacle detection overlay
+- [ ] Configurable thresholds from the dashboard UI
+- [ ] Export an annotated video file from an uploaded clip
 
-## 🤝 Contributing
+## Contributing
 
-Contributions are welcome and appreciated! Please read the
-[Contributing Guide](CONTRIBUTING.md) and our
-[Code of Conduct](CODE_OF_CONDUCT.md) to get started.
+Contributions are welcome — see [CONTRIBUTING.md](CONTRIBUTING.md). Run
+`make test && make lint` before opening a PR; CI runs the same checks.
 
-1. Fork & branch (`git checkout -b feat/amazing`)
-2. `make check` must pass
-3. Open a PR using the template
+## License
 
-## 📄 License
+[MIT](LICENSE) — free to use, modify, and learn from.
 
-Distributed under the **MIT License**. See [LICENSE](LICENSE) for details.
+## Author
 
-## 👤 Author
-
-**Rishi** — building interpretable computer-vision systems.
-
-<sub>If this project helped or inspired you, please consider giving it a ⭐ — it genuinely helps.</sub>
-
----
-
-<div align="center">
-  <sub>Built with classical computer vision, a lot of care for clean architecture, and a modern UI.</sub>
-</div>
+Built by **Rishi** ([@rishii-hub](https://github.com/rishii-hub)) as a computer
+vision portfolio project.

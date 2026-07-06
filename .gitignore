@@ -1,39 +1,26 @@
-# ---- Python ----
+# Python
 __pycache__/
 *.py[cod]
 *.egg-info/
-.eggs/
-build/
-dist/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
 .venv/
 venv/
-env/
+build/
+dist/
 
-# ---- Testing / coverage ----
-.pytest_cache/
-.mypy_cache/
-.ruff_cache/
-.coverage
-htmlcov/
-coverage.xml
+# App runtime
+uploads/
+lane_capture_*.jpg
 
-# ---- Runtime artifacts ----
-captures/
-*.log
-
-# ---- Node / frontend ----
-node_modules/
+# Frontend
+frontend/node_modules/
 frontend/dist/
-frontend/.vite/
+static/dist/
 *.tsbuildinfo
-# build artifacts emitted from composite tsconfig
-frontend/vite.config.js
-frontend/vite.config.d.ts
-*.local
 
-# ---- Editors / OS ----
-.claude/
+# Editor / OS
+.DS_Store
 .idea/
 .vscode/
-.DS_Store
-Thumbs.db
